@@ -1,93 +1,7 @@
-const e = require('express');
 const express = require('express');
-const PORT = process.env.PORT || 3001 || 3000;
-const app = express();
-const db = require('./db/connection');
-const inputCheck = require('./utils/inputCheck');
-const apiRoutes = require('./routes/apiRoutes');
-
-
-
-// middleware 
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-app.use('/api', apiRoutes);
-
-
-
-
-// GET FOR PARTIES 
-
-
-app.get('/api/parties', (req,res) => {
-  const sql = `SELECT * FROM parties`;
-  db.query(sql, (err, rows) => {
-    if(err){
-      res.status(500).json({ error: err.messaeg})
-      return;
-    } 
-    res.json({
-      message: 'Sucess',
-      data: rows
-    })
-  })
-})
-
-
-
-
-
-
-app.get('/api/parties/:id', (req,res) => {
-  const sql = `SELECT * FROM parties WHERE id = ?`;
-  params = [req.params.id];
-  db.query(sql, params, (err, rows) => {
-    if(err){
-      res.status(500).json({ error: err.messaeg})
-      return;
-    } 
-    res.json({
-      message: 'Sucess',
-      data: rows
-    })
-  })
-})
-
-
-
-
-app.delete('/api/party/:id', (req, res) => {
-  const sql = `DELETE FROM parties WHERE id = ?`;
-  const params = [req.params.id];
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: res.message });
-      // checks if anything was deleted
-    } else if (!result.affectedRows) {
-      res.json({
-        message: 'Party not found'
-      });
-    } else {
-      res.json({
-        message: 'deleted',
-        changes: result.affectedRows,
-        id: req.params.id
-      });
-    }
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
+const router = express.Router();
+const db = require('../../db/connection');
+const inputCheck = require('../../utils/inputCheck');
 
 
 
@@ -97,7 +11,7 @@ app.delete('/api/party/:id', (req, res) => {
 
 
 
-app.get("/api/candidate", (req,res) => {
+router.get("/candidate", (req,res) => {
     const sql = `SELECT candidates.*, parties.name AS party_name FROM candidates LEFT JOIN parties ON candidates.party_id = parties.id`;
 
     db.query(sql, (err,rows) => {
@@ -116,7 +30,7 @@ app.get("/api/candidate", (req,res) => {
 
 // get/query a single candidate
 
-app.get('/api/candidate/:id', (req,res) =>{
+router.get('/candidate/:id', (req,res) =>{
   const sql = `SELECT candidates.*, parties.name 
   AS party_name 
   FROM candidates 
@@ -140,7 +54,7 @@ app.get('/api/candidate/:id', (req,res) =>{
 
 
 // Delete a candidate
-app.delete('/api/candidate/:id', (req, res) => {
+router.delete('/candidate/:id', (req, res) => {
     const sql = `DELETE FROM candidates WHERE id = ?`;
     const params = [req.params.id];
   
@@ -165,7 +79,7 @@ app.delete('/api/candidate/:id', (req, res) => {
 
 
  // Create a candidate
-app.post('/api/candidate', ({ body }, res) => {
+router.post('/candidate', ({ body }, res) => {
     const errors = inputCheck(body, 'first_name', 'last_name', 'industry_connected');
     if (errors) {
       res.status(400).json({ error: errors });
@@ -191,7 +105,7 @@ db.query(sql, params, (err, result) => {
 
 // put to update candidate 
 
-app.put('/api/candidate/:id', (req, res) => {
+router.put('/candidate/:id', (req, res) => {
   const errors = inputCheck(req.body, 'party_id');
 
 if (errors) {
@@ -219,12 +133,5 @@ if (errors) {
   });
 });
 
-//  for any other endpoint
-app.use((req,res) => {
-    res.status(404).end();
-}) 
 
-
-app.listen(PORT, () => {
-    console.log(`now listening on ${PORT}`);
-})
+module.exports = router;
