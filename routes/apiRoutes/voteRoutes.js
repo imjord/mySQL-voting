@@ -8,11 +8,26 @@ const inputCheck = require('../../utils/inputCheck');
 
 // get a vote 
 
-const sql = SELECT candidates.*, parties.name AS party_name, COUNT(candidate_id) AS count
-FROM votes
-LEFT JOIN candidates ON votes.candidate_id = candidates.id
-LEFT JOIN parties ON candidates.party_id = parties.id
-GROUP BY candidate_id ORDER BY count DESC;
+router.get('/vote', (req,res)=>{
+    const sql = `SELECT candidates.*, parties.name AS party_name, COUNT(candidate_id) AS count
+    FROM votes
+    LEFT JOIN candidates ON votes.candidate_id = candidates.id
+    LEFT JOIN parties ON candidates.party_id = parties.id
+    GROUP BY candidate_id ORDER BY count DESC`;
+
+    db.query(sql, (err, row) =>{
+        if(err){
+            res.status(400).json({error: err.message});
+            return
+        }
+        res.json({
+            message: 'sucess',
+            data: row
+        })
+    })
+    
+})
+
 
 
 
