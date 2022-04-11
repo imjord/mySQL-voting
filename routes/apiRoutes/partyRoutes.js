@@ -7,7 +7,7 @@ const router = express.Router();
 // GET FOR PARTIES 
 
 
-router.get('/api/parties', (req,res) => {
+router.get('/party', (req,res) => {
     const sql = `SELECT * FROM parties`;
     db.query(sql, (err, rows) => {
       if(err){
@@ -26,7 +26,7 @@ router.get('/api/parties', (req,res) => {
   
   
   
-  router.get('/api/parties/:id', (req,res) => {
+  router.get('/party/:id', (req,res) => {
     const sql = `SELECT * FROM parties WHERE id = ?`;
     params = [req.params.id];
     db.query(sql, params, (err, rows) => {
@@ -44,7 +44,7 @@ router.get('/api/parties', (req,res) => {
   
   
   
-  router.delete('/api/party/:id', (req, res) => {
+  router.delete('/party/:id', (req, res) => {
     const sql = `DELETE FROM parties WHERE id = ?`;
     const params = [req.params.id];
     db.query(sql, params, (err, result) => {

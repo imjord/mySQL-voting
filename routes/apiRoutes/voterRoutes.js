@@ -6,7 +6,7 @@ const inputCheck = require('../../utils/inputCheck');
 // get route  for voters
 
 
-router.get('/voters', (req,res) => {
+router.get('/voter', (req,res) => {
     const sql = `SELECT * FROM voters ORDER BY last_name`;
 
     db.query(sql, (err, rows) => {
@@ -24,7 +24,7 @@ router.get('/voters', (req,res) => {
 
 // route for individual 
 
-router.get('/voters/:id', (req,res) => {
+router.get('/voter/:id', (req,res) => {
     const sql = `SELECT * FROM voters WHERE id = ?`;
     const params = [req.params.id];
 

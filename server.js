@@ -1,6 +1,6 @@
 const e = require('express');
 const express = require('express');
-const PORT = process.env.PORT || 3001 || 3000;
+const PORT = process.env.PORT || 3000 || 3001;
 const app = express();
 const db = require('./db/connection');
 const inputCheck = require('./utils/inputCheck');
